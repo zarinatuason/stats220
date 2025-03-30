@@ -1,0 +1,90 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{css echo=FALSE}
+body {
+  font-size: 12pt;
+  font-family: Calibri;
+}
+h2 {
+  font-size: 30px;
+   text-align: center;
+}
+```
+
+## Exploring Engagement, Ads, and Content Trends on TikTok
+
+```{r}
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDYE3S0F4zhOhNt6YOB2c0fUG2vQ0ziwd4CWJSvPtnLxaMIw1UoO4BawcK3U347uUIOt6kaDOMeNxZ/pub?output=csv")
+
+# Creating new data frame & Re-naming variables
+latest_data <- logged_data %>%
+  rename(video_duration = 2,
+         is_sponsored = 3,
+         ads_before_5th_fyp = 4,
+         video_theme = 5,
+         video_format = 6,
+         has_captions = 7,
+         has_hashtags = 8,
+         like_count = 9,
+         share_count = 10,
+         comment_count = 11)
+```
+
+```{r,fig.height=5, fig.width = 10}
+themes_by_duration <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = factor(video_duration, 
+                           levels = c("Under 15 sec", "15-29 sec", "30-59 sec", 
+                                      "1-3 min", "Over 3 min")), 
+               fill = video_theme)) +
+  labs(title = "Shorter Videos, Bigger Impact?",
+       subtitle = "Exploring TikTok Video Themes and Duration",
+       caption = "Source: TikTok FYP Content Analysis (Self-Collected Data)",
+       x = "Video Duration",
+       y = "Count")
+themes_by_duration
+```
+
+```{r,fig.height=5, fig.width = 10}
+duration_bar_chart <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = factor(video_duration, 
+                           levels = c("Under 15 sec", "15-29 sec", "30-59 sec", 
+                                      "1-3 min", "Over 3 min"))), 
+           fill = "#3a7ca5") +
+  labs(title = "The Duration Debate: Short vs Long",
+       subtitle = "Exploring the Distribution of Video Lengths on TikTok's For You Page (FYP)",
+       caption = "Source: TikTok FYP Content Analysis (Self-Collected Data)",
+       x = "Video Duration",
+       y = "Count")
+duration_bar_chart
+```
+
+```{r,fig.height=5, fig.width = 10}
+# The maximum number of ads before 5th FYP to understand the highest ad count.
+ads_before_5th_fyp <- latest_data$ads_before_5th_fyp
+ads_max <- max(ads_before_5th_fyp, na.rm = TRUE)
+
+# The mean number of ads before the 5th FYP to understand the typical ad exposure in the data
+ads_mean <- mean(ads_before_5th_fyp, na.rm = TRUE)
+
+# The average comment count to understand general engagement across videos.
+comment_count <- latest_data$comment_count
+comment_count_mean <- mean(comment_count,na.rm = TRUE)
+
+like_count_max <- max(latest_data$like_count, na.rm = TRUE)
+
+paste("The maximum number of ads before the 5th For You Page (FYP) is: ", ads_max)
+paste0("The maximum like count across all videos is: ", like_count_max) 
+```
+
+The mean number of ads before the fifth For You Page (FYP) video is `r round(ads_mean, 2)` and the average comment count across videos is `r round(comment_count_mean, 2)` .
+

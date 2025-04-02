@@ -11,16 +11,21 @@ library(tidyverse)
 ```{css echo=FALSE}
 body {
   font-size: 12pt;
-  font-family: Calibri;
+  font-family: "Calibri";
+  color: #000000;
+  background-color: #D2E4EF;
 }
 h2 {
-  font-size: 30px;
-   text-align: center;
+  font-size: 25px;
+  color: #083854;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
 }
+
 ```
 
 ## Exploring Engagement, Ads, and Content Trends on TikTok
-
+From 15-second clips to sponsored posts: Measuring what surfaces on the FYP
 ```{r}
 logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDYE3S0F4zhOhNt6YOB2c0fUG2vQ0ziwd4CWJSvPtnLxaMIw1UoO4BawcK3U347uUIOt6kaDOMeNxZ/pub?output=csv")
 
@@ -38,7 +43,8 @@ latest_data <- logged_data %>%
          comment_count = 11)
 ```
 
-```{r,fig.height=5, fig.width = 10}
+
+```{r,fig.height=5, fig.width = 12}
 themes_by_duration <- latest_data %>%
   ggplot() +
   geom_bar(aes(x = factor(video_duration, 
@@ -51,9 +57,10 @@ themes_by_duration <- latest_data %>%
        x = "Video Duration",
        y = "Count")
 themes_by_duration
+
 ```
 
-```{r,fig.height=5, fig.width = 10}
+```{r,fig.height=5, fig.width = 12}
 duration_bar_chart <- latest_data %>%
   ggplot() +
   geom_bar(aes(x = factor(video_duration, 
@@ -68,7 +75,12 @@ duration_bar_chart <- latest_data %>%
 duration_bar_chart
 ```
 
-```{r,fig.height=5, fig.width = 10}
+
+## TikTok FYP Performance Snapshot
+Live monitoring of ad thresholds and content engagement
+
+
+```{r}
 # The maximum number of ads before 5th FYP to understand the highest ad count.
 ads_before_5th_fyp <- latest_data$ads_before_5th_fyp
 ads_max <- max(ads_before_5th_fyp, na.rm = TRUE)
@@ -87,4 +99,3 @@ paste0("The maximum like count across all videos is: ", like_count_max)
 ```
 
 The mean number of ads before the fifth For You Page (FYP) video is `r round(ads_mean, 2)` and the average comment count across videos is `r round(comment_count_mean, 2)` .
-
